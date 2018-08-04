@@ -555,6 +555,8 @@ public class ColorPicker extends View {
 			mSaturationBar.setSaturation(mHSV[1]);
 		}
 
+		// TODO: setValue macht an dieser Stelle evtl. gar keinen Sinn, weil nur der Hue verändert wird
+
 		if (mValueBar != null && mSaturationBar == null) {
 			Color.colorToHSV(color, mHSV);
 			mValueBar.setColor(mColor);
@@ -584,7 +586,7 @@ public class ColorPicker extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
-
+//TODO: Wenn im Picker eine Farbe gewählt wird, während Value auf 0 steht, crasht der Saturation-Slider
 		// Convert coordinates to our internal coordinate system
 		float x = event.getX() - mTranslationOffset;
 		float y = event.getY() - mTranslationOffset;
@@ -610,13 +612,15 @@ public class ColorPicker extends View {
 				setColor(getOldCenterColor());
 				invalidate();
 			}
-                        // Check whether the user pressed anywhere on the wheel.
-                        else if (Math.sqrt(x*x + y*y)  <= mColorWheelRadius + mColorPointerHaloRadius
-                                        && Math.sqrt(x*x + y*y) >= mColorWheelRadius - mColorPointerHaloRadius
-                                        && mTouchAnywhereOnColorWheelEnabled) {
-                                mUserIsMovingPointer = true;
-                                invalidate();
-                        }
+
+            // Check whether the user pressed anywhere on the wheel.
+            else if (Math.sqrt(x*x + y*y)  <= mColorWheelRadius + mColorPointerHaloRadius
+                            && Math.sqrt(x*x + y*y) >= mColorWheelRadius - mColorPointerHaloRadius
+                            && mTouchAnywhereOnColorWheelEnabled) {
+                    mUserIsMovingPointer = true;
+                    invalidate();
+            }
+
 			// If user did not press pointer or center, report event not handled
 			else{
 				getParent().requestDisallowInterceptTouchEvent(false);

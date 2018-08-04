@@ -198,7 +198,7 @@ public class ColorPicker extends View {
 	 * An array of floats that can be build into a {@code Color} <br>
 	 * Where we can extract the Saturation and Value from.
 	 */
-	private float[] mHSV = new float[3];
+	private float[] mHSVColor = new float[3];
 
 	/**
 	 * {@code SVBar} instance used to control the Saturation/Value bar.
@@ -523,6 +523,7 @@ public class ColorPicker extends View {
 	 *            true for shades of grey. You have been warned!
 	 */
 	public void setColor(int color) {
+	    //TODO: method is only used for tap on center of circle (currently commented out)
 		mAngle = colorToAngle(color);
 		mPointerColor.setColor(calculateColor(mAngle));
 
@@ -535,35 +536,34 @@ public class ColorPicker extends View {
 
 		// check if the instance isn't null
 		if (mSVbar != null) {
-			// the array mHSV will be filled with the HSV values of the color.
-			Color.colorToHSV(color, mHSV);
+			// the array mHSVColor will be filled with the HSV values of the color.
+			Color.colorToHSV(color, mHSVColor);
 			mSVbar.setColor(mColor);
 
 			// because of the design of the Saturation/Value bar,
 			// we can only use Saturation or Value every time.
 			// Here will be checked which we shall use.
-			if (mHSV[1] < mHSV[2]) {
-				mSVbar.setSaturation(mHSV[1]);
-			} else if(mHSV[1] > mHSV[2]){
-				mSVbar.setValue(mHSV[2]);
+			if (mHSVColor[1] < mHSVColor[2]) {
+				mSVbar.setSaturation(mHSVColor[1]);
+			} else if(mHSVColor[1] > mHSVColor[2]){
+				mSVbar.setValue(mHSVColor[2]);
 			}
 		}
 
 		if (mSaturationBar != null) {
-			Color.colorToHSV(color, mHSV);
+			Color.colorToHSV(color, mHSVColor);
 			mSaturationBar.setColor(mColor);
-			mSaturationBar.setSaturation(mHSV[1]);
+			mSaturationBar.setSaturation(mHSVColor[1]);
 		}
 
-		// TODO: setValue macht an dieser Stelle evtl. gar keinen Sinn, weil nur der Hue verändert wird
 
 		if (mValueBar != null && mSaturationBar == null) {
-			Color.colorToHSV(color, mHSV);
+			Color.colorToHSV(color, mHSVColor);
 			mValueBar.setColor(mColor);
-			mValueBar.setValue(mHSV[2]);
+			mValueBar.setValue(mHSVColor[2]);
 		} else if (mValueBar != null) {
-			Color.colorToHSV(color, mHSV);
-			mValueBar.setValue(mHSV[2]);
+			Color.colorToHSV(color, mHSVColor);
+			mValueBar.setValue(mHSVColor[2]);
 		}
         setNewCenterColor(color);
 	}
@@ -586,7 +586,7 @@ public class ColorPicker extends View {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
-//TODO: Wenn im Picker eine Farbe gewählt wird, während Value auf 0 steht, crasht der Saturation-Slider
+
 		// Convert coordinates to our internal coordinate system
 		float x = event.getX() - mTranslationOffset;
 		float y = event.getY() - mTranslationOffset;
@@ -604,6 +604,8 @@ public class ColorPicker extends View {
 				mUserIsMovingPointer = true;
 				invalidate();
 			}
+
+			/*
 			// Check whether the user pressed on the center.
 			else if (x >= -mColorCenterRadius && x <= mColorCenterRadius
 					&& y >= -mColorCenterRadius && y <= mColorCenterRadius
@@ -612,6 +614,7 @@ public class ColorPicker extends View {
 				setColor(getOldCenterColor());
 				invalidate();
 			}
+			*/
 
             // Check whether the user pressed anywhere on the wheel.
             else if (Math.sqrt(x*x + y*y)  <= mColorWheelRadius + mColorPointerHaloRadius
@@ -632,23 +635,28 @@ public class ColorPicker extends View {
 				mAngle = (float) Math.atan2(y - mSlopY, x - mSlopX);
 				mPointerColor.setColor(calculateColor(mAngle));
 
-				mCenterNewColor = calculateColor(mAngle);
+                Color.colorToHSV(mPointerColor.getColor(), mHSVColor);
+
+
+                // mCenterNewColor = calculateColor(mAngle);
 				
 				if (mOpacityBar != null) {
-					mColor = mOpacityBar.setColor(mColor);
+					// mColor = mOpacityBar.setHue(mColor);
 				}
 
 				if (mValueBar != null) {
-					mColor = mValueBar.setColor(mColor);
+					mHSVColor[2] = mValueBar.setHue(mPointerColor.getColor());
 				}
 
 				if (mSaturationBar != null) {
-					mColor = mSaturationBar.setColor(mColor);
+					mHSVColor[1] = mSaturationBar.setHue(mPointerColor.getColor());
 				}
 
 				if (mSVbar != null) {
-					mColor = mSVbar.setColor(mColor);
+					// mColor = mSVbar.setHue(mColor);
 				}
+
+				mColor = Color.HSVToColor(mHSVColor);
 
 				setNewCenterColor(mColor);
 
@@ -800,12 +808,19 @@ public class ColorPicker extends View {
 	 * @param color
 	 *            int of the color used to change the opacity bar color.
 	 */
-	public int changeSaturationBarColor(int color) {
+	public float changeSaturationBarValue(float value) {
 		if (mSaturationBar != null) {
-			return mSaturationBar.setColor(color);
+			return mSaturationBar.setValue(value);
 		}
-		return color;
+		return mHSVColor[1];
 	}
+
+    public float changeValueBarSaturation(float saturation) {
+        if (mValueBar != null) {
+            return mValueBar.setSaturation(saturation);
+        }
+        return mHSVColor[2];
+    }
 
 	/**
 	 * Used to change the color of the {@code ValueBar}.

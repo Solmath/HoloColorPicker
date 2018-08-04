@@ -125,12 +125,12 @@ public class ValueBar extends View {
 	private float[] mHSVColor = new float[3];
 
 	/**
-	 * Factor used to calculate the position to the Opacity on the bar.
+	 * Factor used to calculate the position to the Saturation on the bar.
 	 */
 	private float mPosToSatFactor;
 
 	/**
-	 * Factor used to calculate the Opacity to the postion on the bar.
+	 * Factor used to calculate the Saturation to the postion on the bar.
 	 */
 	private float mSatToPosFactor;
 
@@ -366,7 +366,7 @@ public class ValueBar extends View {
 
                 if (mPicker != null) {
                     mColor = mPicker.changeOpacityBarColor(mColor);
-                    // mColor = mPicker.changeSaturationBarColor(mColor);
+                    mPicker.changeSaturationBarValue(mHSVColor[2]);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -391,7 +391,7 @@ public class ValueBar extends View {
 
                 if (mPicker != null) {
                     mColor = mPicker.changeOpacityBarColor(mColor);
-                    // mColor = mPicker.changeSaturationBarColor(mColor);
+					mPicker.changeSaturationBarValue(mHSVColor[2]);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -437,6 +437,72 @@ public class ValueBar extends View {
 		return mColor;
 	}
 
+	public float setHue(int color) {
+		int x1, y1;
+		if(mOrientation) {
+			x1 = (mBarLength + mBarPointerHaloRadius);
+			y1 = mBarThickness;
+		}
+		else {
+			x1 = mBarThickness;
+			y1 = (mBarLength + mBarPointerHaloRadius);
+		}
+
+		float[] hsvColor = new float[3];
+		Color.colorToHSV(color, hsvColor);
+		mHSVColor[0] = hsvColor[0];
+
+		hsvColor[2] = 1.f;
+
+		int gradientColor = Color.HSVToColor(hsvColor);
+
+		shader = new LinearGradient(mBarPointerHaloRadius, 0,
+				x1, y1, new int[] {
+				Color.BLACK, gradientColor }, null,
+				Shader.TileMode.CLAMP);
+
+		mBarPaint.setShader(shader);
+
+		// calculateColor(mBarPointerPosition);
+		mColor = Color.HSVToColor(mHSVColor);
+		mBarPointerPaint.setColor(mColor);
+		invalidate();
+
+		return mHSVColor[2];
+	}
+
+	public float setSaturation(float saturation) {
+		int x1, y1;
+		if(mOrientation) {
+			x1 = (mBarLength + mBarPointerHaloRadius);
+			y1 = mBarThickness;
+		}
+		else {
+			x1 = mBarThickness;
+			y1 = (mBarLength + mBarPointerHaloRadius);
+		}
+
+		mHSVColor[1] = saturation;
+
+		float[] hsvColor = {mHSVColor[0], mHSVColor[1], 1.f};
+
+		int gradientColor = Color.HSVToColor(hsvColor);
+
+		shader = new LinearGradient(mBarPointerHaloRadius, 0,
+				x1, y1, new int[] {
+				Color.BLACK, gradientColor }, null,
+				Shader.TileMode.CLAMP);
+
+		mBarPaint.setShader(shader);
+
+		// calculateColor(mBarPointerPosition);
+		mColor = Color.HSVToColor(mHSVColor);
+		mBarPointerPaint.setColor(mColor);
+		invalidate();
+
+		return mHSVColor[2];
+	}
+
 	/**
 	 * Set the pointer on the bar. With the opacity value.
 	 * 
@@ -468,9 +534,10 @@ public class ValueBar extends View {
 	    } else if (coord > mBarLength) {
 	    	coord = mBarLength;
 	    }
-	    mColor = Color.HSVToColor(new float[] { mHSVColor[0],
-		    				    mHSVColor[1],
-		    				    mPosToSatFactor * coord });
+
+	    mHSVColor[2] = mPosToSatFactor * coord;
+
+	    mColor = Color.HSVToColor(mHSVColor);
     }
 
 	/**

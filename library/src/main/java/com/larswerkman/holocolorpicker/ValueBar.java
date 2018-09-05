@@ -31,17 +31,15 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.larswerkman.holocolorpicker.R;
 
 public class ValueBar extends View {
 
-	/*
+	/**
 	 * Constants used to save/restore the instance state.
 	 */
 	private static final String STATE_PARENT = "parent";
 	private static final String STATE_COLOR = "color";
 	private static final String STATE_VALUE = "value";
-	private static final String STATE_ORIENTATION = "orientation";
 	
 	/**
 	 * Constants used to identify orientation.
@@ -156,7 +154,7 @@ public class ValueBar extends View {
 	private int oldChangedListenerValue;
 
     public interface OnValueChangedListener {
-        public void onValueChanged(int value);
+        void onValueChanged(int value);
     }
 
     public void setOnValueChangedListener(OnValueChangedListener listener) {
@@ -290,7 +288,7 @@ public class ValueBar extends View {
 					x1, y1,
 					new int[] {
 			                Color.BLACK,
-                            Color.HSVToColor(0xFF, mHSVColor) },
+                            Color.WHITE },
 					null,
                     Shader.TileMode.CLAMP);
 		} else {
@@ -298,7 +296,7 @@ public class ValueBar extends View {
 					x1, y1,
 					new int[] {
 			                Color.BLACK,
-                            0xff81ff00 },
+                            Color.WHITE },
                     null,
 					Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, mHSVColor);
@@ -339,7 +337,7 @@ public class ValueBar extends View {
 		canvas.drawCircle(cX, cY, mBarPointerHaloRadius, mBarPointerHaloPaint);
 		// Draw the pointer.
 		canvas.drawCircle(cX, cY, mBarPointerRadius, mBarPointerPaint);
-	};
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -410,33 +408,12 @@ public class ValueBar extends View {
 	}
 
 	/**
-	 * Set the bar color. <br>
+	 * Set the bar hue. <br>
 	 * <br>
-	 * Its discouraged to use this method.
+	 * Its discouraged to use this method. (why?)
 	 * 
 	 * @param color
 	 */
-	public int setColor(int color) {
-		int x1, y1;
-		if(mOrientation) {
-			x1 = (mBarLength + mBarPointerHaloRadius);
-			y1 = mBarThickness;
-		} else {
-			x1 = mBarThickness;
-			y1 = (mBarLength + mBarPointerHaloRadius);
-		}
-		
-		Color.colorToHSV(color, mHSVColor);
-		shader = new LinearGradient(mBarPointerHaloRadius, 0,
-				x1, y1, new int[] {
-						Color.BLACK, color }, null, Shader.TileMode.CLAMP);
-		mBarPaint.setShader(shader);
-		calculateColor(mBarPointerPosition);
-		mBarPointerPaint.setColor(mColor);
-		invalidate();
-		return mColor;
-	}
-
 	public float setHue(int color) {
 		int x1, y1;
 		if(mOrientation) {
@@ -452,6 +429,7 @@ public class ValueBar extends View {
 		Color.colorToHSV(color, hsvColor);
 		mHSVColor[0] = hsvColor[0];
 
+        hsvColor[1] = mHSVColor[1];
 		hsvColor[2] = 1.f;
 
 		int gradientColor = Color.HSVToColor(hsvColor);
@@ -471,7 +449,7 @@ public class ValueBar extends View {
 		return mHSVColor[2];
 	}
 
-	public float setSaturation(float saturation) {
+	public void setSaturation(float saturation) {
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -499,8 +477,6 @@ public class ValueBar extends View {
 		mColor = Color.HSVToColor(mHSVColor);
 		mBarPointerPaint.setColor(mColor);
 		invalidate();
-
-		return mHSVColor[2];
 	}
 
 	/**
@@ -516,7 +492,7 @@ public class ValueBar extends View {
 		mBarPointerPaint.setColor(mColor);
 		if (mPicker != null) {
 			mColor = mPicker.changeOpacityBarColor(mColor);
-            // mColor = mPicker.changeSaturationBarColor(mColor);
+            mPicker.changeSaturationBarHue(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();
@@ -584,7 +560,7 @@ public class ValueBar extends View {
 		Parcelable superState = savedState.getParcelable(STATE_PARENT);
 		super.onRestoreInstanceState(superState);
 
-		setColor(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
+		setHue(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
 		setValue(savedState.getFloat(STATE_VALUE));
 	}
 }

@@ -284,13 +284,7 @@ public class ValueBar extends View {
 
 		// Update variables that depend of mBarLength.
 		if (!isInEditMode()) {
-			shader = new LinearGradient(mBarPointerHaloRadius, 0,
-					x1, y1,
-					new int[] {
-			                Color.BLACK,
-                            Color.WHITE },
-					null,
-                    Shader.TileMode.CLAMP);
+			setGradient();
 		} else {
 			shader = new LinearGradient(mBarPointerHaloRadius, 0,
 					x1, y1,
@@ -300,9 +294,10 @@ public class ValueBar extends View {
                     null,
 					Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, mHSVColor);
+			
+			mBarPaint.setShader(shader);
 		}
 
-		mBarPaint.setShader(shader);
 		mPosToSatFactor = 1 / ((float) mBarLength);
 		mSatToPosFactor = ((float) mBarLength) / 1;
 
@@ -415,33 +410,13 @@ public class ValueBar extends View {
 	 * @param color
 	 */
 	public float setHue(int color) {
-		int x1, y1;
-		if(mOrientation) {
-			x1 = (mBarLength + mBarPointerHaloRadius);
-			y1 = mBarThickness;
-		}
-		else {
-			x1 = mBarThickness;
-			y1 = (mBarLength + mBarPointerHaloRadius);
-		}
-
+		
 		float[] hsvColor = new float[3];
 		Color.colorToHSV(color, hsvColor);
 		mHSVColor[0] = hsvColor[0];
 
-        hsvColor[1] = mHSVColor[1];
-		hsvColor[2] = 1.f;
+        setGradient();
 
-		int gradientColor = Color.HSVToColor(hsvColor);
-
-		shader = new LinearGradient(mBarPointerHaloRadius, 0,
-				x1, y1, new int[] {
-				Color.BLACK, gradientColor }, null,
-				Shader.TileMode.CLAMP);
-
-		mBarPaint.setShader(shader);
-
-		// calculateColor(mBarPointerPosition);
 		mColor = Color.HSVToColor(mHSVColor);
 		mBarPointerPaint.setColor(mColor);
 		invalidate();
@@ -450,6 +425,17 @@ public class ValueBar extends View {
 	}
 
 	public void setSaturation(float saturation) {
+		
+		mHSVColor[1] = saturation;
+
+		setGradient();
+
+		mColor = Color.HSVToColor(mHSVColor);
+		mBarPointerPaint.setColor(mColor);
+		invalidate();
+	}
+
+	private void setGradient(){
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -460,23 +446,18 @@ public class ValueBar extends View {
 			y1 = (mBarLength + mBarPointerHaloRadius);
 		}
 
-		mHSVColor[1] = saturation;
+		float[] hsvColor = {mHSVColor[0], mHSVColor[1], 0.f};
+		int startColor = Color.HSVToColor(hsvColor);
 
-		float[] hsvColor = {mHSVColor[0], mHSVColor[1], 1.f};
-
-		int gradientColor = Color.HSVToColor(hsvColor);
+		hsvColor[2] = 1.f;
+		int endColor = Color.HSVToColor(hsvColor);
 
 		shader = new LinearGradient(mBarPointerHaloRadius, 0,
 				x1, y1, new int[] {
-				Color.BLACK, gradientColor }, null,
+				startColor, endColor }, null,
 				Shader.TileMode.CLAMP);
 
 		mBarPaint.setShader(shader);
-
-		// calculateColor(mBarPointerPosition);
-		mColor = Color.HSVToColor(mHSVColor);
-		mBarPointerPaint.setColor(mColor);
-		invalidate();
 	}
 
 	/**
@@ -485,14 +466,12 @@ public class ValueBar extends View {
 	 * @param value float between 0 and 1
 	 */
 	public void setValue(float value) {
-		mBarPointerPosition = Math
-				.round((mBarLength - (mSatToPosFactor * value))
-						+ mBarPointerHaloRadius);
-		calculateColor(mBarPointerPosition);
+
+		mColor = Color.HSVToColor(mHSVColor);
 		mBarPointerPaint.setColor(mColor);
 		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
-            mPicker.changeSaturationBarHue(mColor);
+			// mColor = mPicker.changeOpacityBarColor(mColor);
+            // mPicker.changeSaturationBarHue(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();
@@ -546,9 +525,9 @@ public class ValueBar extends View {
 		state.putParcelable(STATE_PARENT, superState);
 		state.putFloatArray(STATE_COLOR, mHSVColor);
 
-		float[] hsvColor = new float[3];
-		Color.colorToHSV(mColor, hsvColor);
-		state.putFloat(STATE_VALUE, hsvColor[2]);
+		// float[] hsvColor = new float[3];
+		// Color.colorToHSV(mColor, hsvColor);
+		state.putFloat(STATE_VALUE, mHSVColor[2]);
 
 		return state;
 	}
@@ -560,7 +539,9 @@ public class ValueBar extends View {
 		Parcelable superState = savedState.getParcelable(STATE_PARENT);
 		super.onRestoreInstanceState(superState);
 
-		setHue(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
+        mHSVColor = savedState.getFloatArray((STATE_COLOR));
+
 		setValue(savedState.getFloat(STATE_VALUE));
+        setHue(Color.HSVToColor(mHSVColor));
 	}
 }

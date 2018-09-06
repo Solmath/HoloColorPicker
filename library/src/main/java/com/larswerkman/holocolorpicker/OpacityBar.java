@@ -146,7 +146,7 @@ public class OpacityBar extends View {
 	private int oldChangedListenerOpacity;
 
     public interface OnOpacityChangedListener {
-        public void onOpacityChanged(int opacity);
+        void onOpacityChanged(int opacity);
     }
 
     public void setOnOpacityChangedListener(OnOpacityChangedListener listener) {
@@ -184,23 +184,23 @@ public class OpacityBar extends View {
 
 	private void init(AttributeSet attrs, int defStyle) {
 		final TypedArray a = getContext().obtainStyledAttributes(attrs,
-				R.styleable.ColorBars, defStyle, 0);
+				R.styleable.ColorBar, defStyle, 0);
 		final Resources b = getContext().getResources();
 
 		mBarThickness = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_thickness,
+				R.styleable.ColorBar_bar_thickness,
 				b.getDimensionPixelSize(R.dimen.bar_thickness));
-		mBarLength = a.getDimensionPixelSize(R.styleable.ColorBars_bar_length,
+		mBarLength = a.getDimensionPixelSize(R.styleable.ColorBar_bar_length,
 				b.getDimensionPixelSize(R.dimen.bar_length));
 		mPreferredBarLength = mBarLength;
 		mBarPointerRadius = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_pointer_radius,
+				R.styleable.ColorBar_bar_pointer_radius,
 				b.getDimensionPixelSize(R.dimen.bar_pointer_radius));
 		mBarPointerHaloRadius = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_pointer_halo_radius,
+				R.styleable.ColorBar_bar_pointer_halo_radius,
 				b.getDimensionPixelSize(R.dimen.bar_pointer_halo_radius));
 		mOrientation = a.getBoolean(
-				R.styleable.ColorBars_bar_orientation_horizontal, ORIENTATION_DEFAULT);
+				R.styleable.ColorBar_bar_orientation_horizontal, ORIENTATION_DEFAULT);
 
 		a.recycle();
 

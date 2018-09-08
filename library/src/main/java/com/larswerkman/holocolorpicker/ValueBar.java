@@ -111,13 +111,7 @@ public class ValueBar extends ColorBar {
 
 		// Update variables that depend of mBarLength.
 		if (!isInEditMode()) {
-			shader = new LinearGradient(mBarPointerHaloRadius, 0,
-					x1, y1,
-					new int[] {
-			                Color.BLACK,
-                            Color.WHITE },
-					null,
-                    Shader.TileMode.CLAMP);
+			setGradient();
 		} else {
 			shader = new LinearGradient(mBarPointerHaloRadius, 0,
 					x1, y1,
@@ -127,9 +121,10 @@ public class ValueBar extends ColorBar {
                     null,
 					Shader.TileMode.CLAMP);
 			Color.colorToHSV(0xff81ff00, mHSVColor);
+
+			mBarPaint.setShader(shader);
 		}
 
-		mBarPaint.setShader(shader);
 		mPosToSatFactor = 1 / ((float) mBarLength);
 		mSatToPosFactor = ((float) mBarLength) / 1;
 
@@ -212,60 +207,19 @@ public class ValueBar extends ColorBar {
 		return true;
 	}
 
-<<<<<<< ColorBarClass
-	/**
-	 * Set the bar hue. <br>
-	 * <br>
-	 * Its discouraged to use this method. (why?)
-	 * 
-	 * @param color
-	 */
-	public float setHue(int color) {
-		int x1, y1;
-		if(mOrientation) {
-			x1 = (mBarLength + mBarPointerHaloRadius);
-			y1 = mBarThickness;
-		}
-		else {
-			x1 = mBarThickness;
-			y1 = (mBarLength + mBarPointerHaloRadius);
-		}
-
-		float[] hsvColor = new float[3];
-		Color.colorToHSV(color, hsvColor);
-		mHSVColor[0] = hsvColor[0];
-
-        hsvColor[1] = mHSVColor[1];
-		hsvColor[2] = 1.f;
-
-		int gradientColor = Color.HSVToColor(hsvColor);
-
-		shader = new LinearGradient(mBarPointerHaloRadius, 0,
-				x1, y1, new int[] {
-				Color.BLACK, gradientColor }, null,
-				Shader.TileMode.CLAMP);
-=======
 	public void setSaturation(float saturation) {
 
 		mHSVColor[SATURATION] = saturation;
->>>>>>> local
 
-		mBarPaint.setShader(shader);
+		setGradient();
 
-		// calculateColor(mBarPointerPosition);
 		mColor = Color.HSVToColor(mHSVColor);
 		mBarPointerPaint.setColor(mColor);
 		invalidate();
-
-		return mHSVColor[2];
 	}
 
-<<<<<<< ColorBarClass
-	public void setSaturation(float saturation) {
-=======
 	@Override
 	public void setGradient(){
->>>>>>> local
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -276,55 +230,17 @@ public class ValueBar extends ColorBar {
 			y1 = (mBarLength + mBarPointerHaloRadius);
 		}
 
-		mHSVColor[1] = saturation;
+		float[] hsvColor = {mHSVColor[0], mHSVColor[1], 0.f};
+		int startColor = Color.HSVToColor(hsvColor);
 
-		float[] hsvColor = {mHSVColor[0], mHSVColor[1], 1.f};
-
-		int gradientColor = Color.HSVToColor(hsvColor);
+		hsvColor[2] = 1.f;
+		int endColor = Color.HSVToColor(hsvColor);
 
 		shader = new LinearGradient(mBarPointerHaloRadius, 0,
 				x1, y1, new int[] {
-				Color.BLACK, gradientColor }, null,
+				startColor, endColor }, null,
 				Shader.TileMode.CLAMP);
 
 		mBarPaint.setShader(shader);
-
-		// calculateColor(mBarPointerPosition);
-		mColor = Color.HSVToColor(mHSVColor);
-		mBarPointerPaint.setColor(mColor);
-		invalidate();
 	}
-<<<<<<< ColorBarClass
-
-	/**
-	 * Set the pointer on the bar on restore instance state.
-	 * 
-	 * @param value float between 0 and 1
-	 */
-	public void setValue(float value) {
-		mBarPointerPosition = Math
-				.round((mBarLength - (mSatToPosFactor * value))
-						+ mBarPointerHaloRadius);
-		calculateColor(mBarPointerPosition);
-		mBarPointerPaint.setColor(mColor);
-		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
-            mPicker.changeSaturationBarHue(mColor);
-			mPicker.setNewCenterColor(mColor);
-		}
-		invalidate();
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Parcelable state) {
-		Bundle savedState = (Bundle) state;
-
-		Parcelable superState = savedState.getParcelable(STATE_PARENT);
-		super.onRestoreInstanceState(superState);
-
-		setHue(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
-		setValue(savedState.getFloat(STATE_POSITION));
-	}
-=======
->>>>>>> local
 }

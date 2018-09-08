@@ -162,23 +162,23 @@ public class SVBar extends View {
 
 	private void init(AttributeSet attrs, int defStyle) {
 		final TypedArray a = getContext().obtainStyledAttributes(attrs,
-				R.styleable.ColorBars, defStyle, 0);
+				R.styleable.ColorBar, defStyle, 0);
 		final Resources b = getContext().getResources();
 
 		mBarThickness = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_thickness,
+				R.styleable.ColorBar_bar_thickness,
 				b.getDimensionPixelSize(R.dimen.bar_thickness));
-		mBarLength = a.getDimensionPixelSize(R.styleable.ColorBars_bar_length,
+		mBarLength = a.getDimensionPixelSize(R.styleable.ColorBar_bar_length,
 				b.getDimensionPixelSize(R.dimen.bar_length));
 		mPreferredBarLength = mBarLength;
 		mBarPointerRadius = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_pointer_radius,
+				R.styleable.ColorBar_bar_pointer_radius,
 				b.getDimensionPixelSize(R.dimen.bar_pointer_radius));
 		mBarPointerHaloRadius = a.getDimensionPixelSize(
-				R.styleable.ColorBars_bar_pointer_halo_radius,
+				R.styleable.ColorBar_bar_pointer_halo_radius,
 				b.getDimensionPixelSize(R.dimen.bar_pointer_halo_radius));
 		mOrientation = a.getBoolean(
-				R.styleable.ColorBars_bar_orientation_horizontal, ORIENTATION_DEFAULT);
+				R.styleable.ColorBar_bar_orientation_horizontal, ORIENTATION_DEFAULT);
 
 		a.recycle();
 
@@ -314,9 +314,9 @@ public class SVBar extends View {
 		canvas.drawCircle(cX, cY, mBarPointerHaloRadius, mBarPointerHaloPaint);
 		// Draw the pointer.
 		canvas.drawCircle(cX, cY, mBarPointerRadius, mBarPointerPaint);
-	};
+	}
 
-	@Override
+    @Override
 	public boolean onTouchEvent(MotionEvent event) {
 		getParent().requestDisallowInterceptTouchEvent(true);
 
@@ -340,7 +340,7 @@ public class SVBar extends View {
 				mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -364,7 +364,7 @@ public class SVBar extends View {
                 mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -391,7 +391,7 @@ public class SVBar extends View {
 		// Check whether the Saturation/Value bar is added to the ColorPicker
 		// wheel
 		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
+			mPicker.changeOpacityBarColor(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();
@@ -410,7 +410,7 @@ public class SVBar extends View {
 		// Check whether the Saturation/Value bar is added to the ColorPicker
 		// wheel
 		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
+			mPicker.changeOpacityBarColor(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();

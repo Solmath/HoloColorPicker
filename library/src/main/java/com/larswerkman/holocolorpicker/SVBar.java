@@ -340,7 +340,7 @@ public class SVBar extends View {
 				mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -364,7 +364,7 @@ public class SVBar extends View {
                 mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -391,7 +391,7 @@ public class SVBar extends View {
 		// Check whether the Saturation/Value bar is added to the ColorPicker
 		// wheel
 		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
+			mPicker.changeOpacityBarColor(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();
@@ -410,7 +410,7 @@ public class SVBar extends View {
 		// Check whether the Saturation/Value bar is added to the ColorPicker
 		// wheel
 		if (mPicker != null) {
-			mColor = mPicker.changeOpacityBarColor(mColor);
+			mPicker.changeOpacityBarColor(mColor);
 			mPicker.setNewCenterColor(mColor);
 		}
 		invalidate();

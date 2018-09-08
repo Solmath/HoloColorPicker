@@ -19,8 +19,6 @@ package com.larswerkman.holocolorpicker;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -171,7 +169,7 @@ public class SaturationBar extends ColorBar {
 
                 if (mPicker != null) {
                     mPicker.changeValueBarSaturation(mHSVColor[1]);
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -196,7 +194,7 @@ public class SaturationBar extends ColorBar {
 
                 if (mPicker != null) {
                     mPicker.changeValueBarSaturation(mHSVColor[1]);
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.setNewCenterColor(mColor);
                 }
                 invalidate();
@@ -214,6 +212,7 @@ public class SaturationBar extends ColorBar {
 		return true;
 	}
 
+<<<<<<< ColorBarClass
 	/**
 	 * Set the bar color. <br>
 	 * <br>
@@ -258,6 +257,21 @@ public class SaturationBar extends ColorBar {
 	}
 
 	public float setValue(float value) {
+=======
+	public void setValue(float value) {
+
+		mHSVColor[BRIGHTNESS] = value;
+
+		setGradient();
+
+        mColor = Color.HSVToColor(mHSVColor);
+		mBarPointerPaint.setColor(mColor);
+		invalidate();
+	}
+
+	@Override
+	public void setGradient(){
+>>>>>>> local
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -290,6 +304,7 @@ public class SaturationBar extends ColorBar {
 
 		return mHSVColor[1];
 	}
+<<<<<<< ColorBarClass
 
 	/**
 	 * Set the pointer on the bar. With the opacity value.
@@ -320,4 +335,6 @@ public class SaturationBar extends ColorBar {
 		setHue(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
 		setSaturation(savedState.getFloat(STATE_POSITION));
 	}
+=======
+>>>>>>> local
 }

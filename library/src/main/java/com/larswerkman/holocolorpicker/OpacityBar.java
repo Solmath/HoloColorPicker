@@ -406,7 +406,7 @@ public class OpacityBar extends View {
 	 * 
 	 * @param color
 	 */
-	public int setColor(int color) {
+	public void setColor(int color) {
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -428,7 +428,6 @@ public class OpacityBar extends View {
 //			mPicker.setNewCenterColor(mColor);
 //		}
 		invalidate();
-		return mColor;
 	}
 
 	/**

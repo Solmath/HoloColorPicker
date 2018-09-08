@@ -19,8 +19,6 @@ package com.larswerkman.holocolorpicker;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -170,7 +168,7 @@ public class ValueBar extends ColorBar {
 				mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
                     mPicker.changeSaturationBarValue(mHSVColor[2]);
                     mPicker.setNewCenterColor(mColor);
                 }
@@ -195,7 +193,7 @@ public class ValueBar extends ColorBar {
 				mBarPointerPaint.setColor(mColor);
 
                 if (mPicker != null) {
-                    mColor = mPicker.changeOpacityBarColor(mColor);
+                    mPicker.changeOpacityBarColor(mColor);
 					mPicker.changeSaturationBarValue(mHSVColor[2]);
                     mPicker.setNewCenterColor(mColor);
                 }
@@ -214,6 +212,7 @@ public class ValueBar extends ColorBar {
 		return true;
 	}
 
+<<<<<<< ColorBarClass
 	/**
 	 * Set the bar hue. <br>
 	 * <br>
@@ -245,6 +244,11 @@ public class ValueBar extends ColorBar {
 				x1, y1, new int[] {
 				Color.BLACK, gradientColor }, null,
 				Shader.TileMode.CLAMP);
+=======
+	public void setSaturation(float saturation) {
+
+		mHSVColor[SATURATION] = saturation;
+>>>>>>> local
 
 		mBarPaint.setShader(shader);
 
@@ -256,7 +260,12 @@ public class ValueBar extends ColorBar {
 		return mHSVColor[2];
 	}
 
+<<<<<<< ColorBarClass
 	public void setSaturation(float saturation) {
+=======
+	@Override
+	public void setGradient(){
+>>>>>>> local
 		int x1, y1;
 		if(mOrientation) {
 			x1 = (mBarLength + mBarPointerHaloRadius);
@@ -285,6 +294,7 @@ public class ValueBar extends ColorBar {
 		mBarPointerPaint.setColor(mColor);
 		invalidate();
 	}
+<<<<<<< ColorBarClass
 
 	/**
 	 * Set the pointer on the bar on restore instance state.
@@ -315,4 +325,6 @@ public class ValueBar extends ColorBar {
 		setHue(Color.HSVToColor(savedState.getFloatArray(STATE_COLOR)));
 		setValue(savedState.getFloat(STATE_POSITION));
 	}
+=======
+>>>>>>> local
 }

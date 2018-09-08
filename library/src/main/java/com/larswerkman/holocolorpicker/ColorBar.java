@@ -13,7 +13,7 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class ColorBar extends View{
+public abstract class ColorBar extends View{
 
     /**
      * Constants used to save/restore the instance state.
@@ -261,6 +261,26 @@ public class ColorBar extends View{
     }
 
     /**
+     * Set the bar hue. <br>
+     * <br>
+     * Its discouraged to use this method. (why?)
+     *
+     * @param hue The current value of the picker
+     */
+    public void setHue(float hue) {
+
+        mHSVColor[0] = hue;
+
+        setGradient();
+
+        mColor = Color.HSVToColor(mHSVColor);
+        mBarPointerPaint.setColor(mColor);
+        invalidate();
+    }
+
+    public abstract void setGradient();
+
+    /**
      * Get the currently selected color.
      *
      * @return The ARGB value of the currently selected color.
@@ -290,10 +310,33 @@ public class ColorBar extends View{
         state.putParcelable(STATE_PARENT, superState);
         state.putFloatArray(STATE_COLOR, mHSVColor);
 
-        float[] hsvColor = new float[3];
-        Color.colorToHSV(mColor, hsvColor);
-        state.putFloat(STATE_POSITION, hsvColor[mBarType]);
+        // float[] hsvColor = new float[3];
+        // Color.colorToHSV(mColor, hsvColor);
+        // state.putFloat(STATE_POSITION, mHSVColor[mBarType]);
 
         return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        Bundle savedState = (Bundle) state;
+
+        Parcelable superState = savedState.getParcelable(STATE_PARENT);
+        super.onRestoreInstanceState(superState);
+
+        mHSVColor = savedState.getFloatArray((STATE_COLOR));
+        mColor = Color.HSVToColor(mHSVColor);
+
+        mBarPointerPaint.setColor(mColor);
+
+        if (mPicker != null) {
+            // mPicker.changeValueBarHue(mColor);
+            // mColor = mPicker.changeOpacityBarColor(mColor);
+            mPicker.setNewCenterColor(mColor);
+        }
+
+        setHue(mHSVColor[0]);
+
+        invalidate();
     }
 }

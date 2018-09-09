@@ -231,6 +231,11 @@ public class ColorPicker extends View {
 	private OnColorChangedListener onColorChangedListener;
 
 	/**
+	 * {@code onColorChangedListener} instance of the onColorChangedListener
+	 */
+	private OnHueChangedListener onHueChangedListener;
+
+	/**
 	 * {@code onColorSelectedListener} instance of the onColorSelectedListener
 	 */
 	private OnColorSelectedListener onColorSelectedListener;
@@ -252,13 +257,23 @@ public class ColorPicker extends View {
 
 	/**
 	 * An interface that is called whenever the color is changed. Currently it
-	 * is always called when the color is changes.
+	 * is always called when the color changes.
 	 * 
 	 * @author lars
 	 * 
 	 */
 	public interface OnColorChangedListener {
 		void onColorChanged(int color);
+	}
+
+	/**
+	 * An interface that is called whenever only the hue should be changed.
+	 *
+	 * @author thomas
+	 *
+	 */
+	public interface OnHueChangedListener {
+		void onHueChanged(float hue);
 	}
 
 	/**
@@ -286,6 +301,24 @@ public class ColorPicker extends View {
 	 */
 	public OnColorChangedListener getOnColorChangedListener() {
 		return this.onColorChangedListener;
+	}
+
+	/**
+	 * Set a onColorChangedListener
+	 *
+	 * @param listener {@code OnHueChangedListener}
+	 */
+	public void setOnHueChangedListener(OnHueChangedListener listener) {
+		this.onHueChangedListener = listener;
+	}
+
+	/**
+	 * Gets the onColorChangedListener
+	 *
+	 * @return {@code OnHueChangedListener}
+	 */
+	public OnHueChangedListener getOnHueChangedListener() {
+		return this.onHueChangedListener;
 	}
 
 	/**
